@@ -1,0 +1,63 @@
+// Problem: Group Anagrams
+// LeetCode 49
+// Platform: LeetCode / CodeChef
+// Approach: Sorting + Hash Map
+// Time Complexity: O(n × k log k)
+// Space Complexity: O(n × k)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to group anagrams
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+
+    unordered_map<string, vector<string>> mp;
+
+    for (string str : strs) {
+
+        string key = str;
+
+        sort(key.begin(), key.end());
+
+        mp[key].push_back(str);
+    }
+
+    vector<vector<string>> ans;
+
+    for (auto it : mp) {
+        ans.push_back(it.second);
+    }
+
+    return ans;
+}
+
+// Function to print grouped anagrams
+void printAnswer(vector<vector<string>> ans) {
+
+    cout << "[" << endl;
+
+    for (auto group : ans) {
+
+        cout << "  [ ";
+
+        for (string word : group) {
+            cout << word << " ";
+        }
+
+        cout << "]" << endl;
+    }
+
+    cout << "]" << endl;
+}
+
+int main() {
+
+    // Example Test Case
+    vector<string> strs = {"eat", "tea", "tan", "ate", "nat", "bat"};
+
+    vector<vector<string>> ans = groupAnagrams(strs);
+
+    printAnswer(ans);
+
+    return 0;
+}
