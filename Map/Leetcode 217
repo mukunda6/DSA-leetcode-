@@ -1,32 +1,139 @@
 // Problem: Contains Duplicate
 // Platform: LeetCode / CodeChef
-// Approach: Hash Map
-// Time Complexity: O(n)
-// Space Complexity: O(n)
 
 #include <bits/stdc++.h>
 using namespace std;
 
-// Function to check if array contains duplicate elements
-bool containsDuplicate(vector<int>& nums) {
+/*------------------------------------------------------------
+Approach 1: Brute Force
+Time Complexity: O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+bool containsDuplicateBruteForce(vector<int>& nums) {
+
+    for (int i = 0; i < nums.size(); i++) {
+
+        for (int j = i + 1; j < nums.size(); j++) {
+
+            if (nums[i] == nums[j]) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/*------------------------------------------------------------
+Approach 2: Sorting
+Time Complexity: O(n log n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+bool containsDuplicateSorting(vector<int> nums) {
+
+    sort(nums.begin(), nums.end());
+
+    for (int i = 1; i < nums.size(); i++) {
+
+        if (nums[i] == nums[i - 1]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*------------------------------------------------------------
+Approach 3: Hash Set
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+bool containsDuplicateHashSet(vector<int>& nums) {
+
+    unordered_set<int> s;
+
+    for (int i = 0; i < nums.size(); i++) {
+        s.insert(nums[i]);
+    }
+
+    return nums.size() > s.size();
+}
+
+/*------------------------------------------------------------
+Approach 4: Hash Map (Early Return)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+bool containsDuplicateHashMap(vector<int>& nums) {
+
     unordered_map<int, int> m;
 
     for (int i = 0; i < nums.size(); i++) {
+
         m[nums[i]]++;
+
         if (m[nums[i]] > 1) {
             return true;
         }
     }
+
     return false;
 }
 
-int main() {
-    // Example test cases
-    vector<int> nums1 = {1, 2, 3, 1};
-    vector<int> nums2 = {1, 2, 3, 4};
+/*------------------------------------------------------------
+Approach 5: Hash Map (Frequency Count)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+bool containsDuplicateFrequency(vector<int>& nums) {
 
-    cout << containsDuplicate(nums1) << endl; // 1 (true)
-    cout << containsDuplicate(nums2) << endl; // 0 (false)
+    unordered_map<int, int> m;
+
+    // Count frequency of every element
+    for (int i = 0; i < nums.size(); i++) {
+        m[nums[i]]++;
+    }
+
+    // Check frequencies
+    for (auto it : m) {
+
+        if (it.second > 1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Function to print result
+void printAnswer(string approach, bool ans) {
+
+    cout << approach << endl;
+    cout << "Contains Duplicate: "
+         << (ans ? "True" : "False") << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    // Example Test Case
+    vector<int> nums = {1, 2, 3, 1};
+
+    printAnswer("Approach 1: Brute Force",
+                containsDuplicateBruteForce(nums));
+
+    printAnswer("Approach 2: Sorting",
+                containsDuplicateSorting(nums));
+
+    printAnswer("Approach 3: Hash Set",
+                containsDuplicateHashSet(nums));
+
+    printAnswer("Approach 4: Hash Map (Early Return)",
+                containsDuplicateHashMap(nums));
+
+    printAnswer("Approach 5: Hash Map (Frequency Count)",
+                containsDuplicateFrequency(nums));
 
     return 0;
 }
