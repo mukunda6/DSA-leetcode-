@@ -1,1 +1,146 @@
+// Problem: Replace Elements with Greatest Element on Right Side
+// LeetCode 1299
+// Platform: LeetCode / CodeChef
 
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Brute Force
+Time Complexity: O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+vector<int> replaceElementsBruteForce(vector<int> arr) {
+
+    int n = arr.size();
+
+    for (int i = 0; i < n; i++) {
+
+        int maxi = -1;
+
+        for (int j = i + 1; j < n; j++) {
+            maxi = max(maxi, arr[j]);
+        }
+
+        arr[i] = maxi;
+    }
+
+    return arr;
+}
+
+/*------------------------------------------------------------
+Approach 2: Suffix Maximum Array
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+vector<int> replaceElementsSuffix(vector<int> arr) {
+
+    int n = arr.size();
+
+    vector<int> suffix(n);
+
+    suffix[n - 1] = arr[n - 1];
+
+    for (int i = n - 2; i >= 0; i--) {
+        suffix[i] = max(arr[i], suffix[i + 1]);
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        arr[i] = suffix[i + 1];
+    }
+
+    arr[n - 1] = -1;
+
+    return arr;
+}
+
+/*------------------------------------------------------------
+Approach 3: Right-to-Left Traversal (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+vector<int> replaceElementsOptimal(vector<int> arr) {
+
+    int n = arr.size();
+
+    int maxRight = -1;
+
+    for (int i = n - 1; i >= 0; i--) {
+
+        int current = arr[i];
+
+        arr[i] = maxRight;
+
+        maxRight = max(maxRight, current);
+    }
+
+    return arr;
+}
+
+/*------------------------------------------------------------
+Approach 4: Monotonic Stack // not much important
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+vector<int> replaceElementsStack(vector<int> arr) {
+
+    int n = arr.size();
+
+    stack<int> st;
+
+    vector<int> ans(n);
+
+    st.push(-1);
+
+    int maxRight = -1;
+
+    for (int i = n - 1; i >= 0; i--) {
+
+        ans[i] = maxRight;
+
+        maxRight = max(maxRight, arr[i]);
+
+        while (!st.empty() && st.top() < arr[i]) {
+            st.pop();
+        }
+
+        st.push(arr[i]);
+    }
+
+    return ans;
+}
+
+// Function to print array
+void printAnswer(string approach, vector<int> ans) {
+
+    cout << approach << endl;
+
+    cout << "Output: ";
+
+    for (int x : ans) {
+        cout << x << " ";
+    }
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<int> arr = {17,18,5,4,6,1};
+
+    printAnswer("Approach 1: Brute Force",
+                replaceElementsBruteForce(arr));
+
+    printAnswer("Approach 2: Suffix Maximum Array",
+                replaceElementsSuffix(arr));
+
+    printAnswer("Approach 3: Right-to-Left Traversal",
+                replaceElementsOptimal(arr));
+
+    printAnswer("Approach 4: Monotonic Stack",
+                replaceElementsStack(arr));
+
+    return 0;
+}
