@@ -1,1 +1,156 @@
+// Problem: Find Numbers with Even Number of Digits
+// LeetCode 1295
+// Platform: LeetCode / CodeChef
 
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: String Conversion
+Time Complexity: O(n × d)
+Space Complexity: O(d)
+------------------------------------------------------------*/
+int findNumbersString(vector<int>& nums) {
+
+    int count = 0;
+
+    for (int num : nums) {
+
+        if (to_string(num).length() % 2 == 0) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+/*------------------------------------------------------------
+Approach 2: Count Digits Using Division
+Time Complexity: O(n × d)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+int findNumbersDivision(vector<int>& nums) {
+
+    int count = 0;
+
+    for (int num : nums) {
+
+        int digits = 0;
+        int temp = num;
+
+        while (temp > 0) {
+            digits++;
+            temp /= 10;
+        }
+
+        if (digits % 2 == 0) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+/*------------------------------------------------------------
+Approach 3: Using Logarithm
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+int findNumbersLog(vector<int>& nums) {
+
+    int count = 0;
+
+    for (int num : nums) {
+
+        int digits = floor(log10(num)) + 1;
+
+        if (digits % 2 == 0) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+/*------------------------------------------------------------
+Approach 4: Range Checking (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+int findNumbersRange(vector<int>& nums) {
+
+    int count = 0;
+
+    for (int num : nums) {
+
+        if ((num >= 10 && num <= 99) ||
+            (num >= 1000 && num <= 9999) ||
+            (num == 100000)) {
+
+            count++;
+        }
+    }
+
+    return count;
+}
+
+/*------------------------------------------------------------
+Approach 5: Helper Function
+Time Complexity: O(n × d)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+int countDigits(int num) {
+
+    int digits = 0;
+
+    while (num > 0) {
+        digits++;
+        num /= 10;
+    }
+
+    return digits;
+}
+
+int findNumbersHelper(vector<int>& nums) {
+
+    int count = 0;
+
+    for (int num : nums) {
+
+        if (countDigits(num) % 2 == 0) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+// Function to print result
+void printAnswer(string approach, int ans) {
+
+    cout << approach << endl;
+    cout << "Even Digit Numbers: " << ans << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<int> nums = {12, 345, 2, 6, 7896};
+
+    printAnswer("Approach 1: String Conversion",
+                findNumbersString(nums));
+
+    printAnswer("Approach 2: Count Digits Using Division",
+                findNumbersDivision(nums));
+
+    printAnswer("Approach 3: Using Logarithm",
+                findNumbersLog(nums));
+
+    printAnswer("Approach 4: Range Checking (Optimal)",
+                findNumbersRange(nums));
+
+    printAnswer("Approach 5: Helper Function",
+                findNumbersHelper(nums));
+
+    return 0;
+}
