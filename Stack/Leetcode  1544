@@ -1,0 +1,106 @@
+// Problem: Make The String Great
+// LeetCode 1544
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Recursive
+Time Complexity: O(n²)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string makeGoodRecursive(string s) {
+
+    for (int i = 0; i < s.size() - 1; i++) {
+
+        if (abs(s[i] - s[i + 1]) == 32) {
+
+            return makeGoodRecursive(s.substr(0, i) + s.substr(i + 2));
+        }
+    }
+
+    return s;
+}
+
+/*------------------------------------------------------------
+Approach 2: Stack
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string makeGoodStack(string s) {
+
+    stack<char> st;
+
+    for (char ch : s) {
+
+        if (!st.empty() && abs(st.top() - ch) == 32) {
+
+            st.pop();
+        }
+        else {
+
+            st.push(ch);
+        }
+    }
+
+    string ans;
+
+    while (!st.empty()) {
+
+        ans += st.top();
+        st.pop();
+    }
+
+    reverse(ans.begin(), ans.end());
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 3: String as Stack (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string makeGoodOptimal(string s) {
+
+    string ans;
+
+    for (char ch : s) {
+
+        if (!ans.empty() && abs(ans.back() - ch) == 32) {
+
+            ans.pop_back();
+        }
+        else {
+
+            ans.push_back(ch);
+        }
+    }
+
+    return ans;
+}
+
+// Function to print answer
+void printAnswer(string approach, string ans) {
+
+    cout << approach << endl;
+    cout << "Output: \"" << ans << "\"" << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    string s = "leEeetcode";
+
+    printAnswer("Approach 1: Recursive",
+                makeGoodRecursive(s));
+
+    printAnswer("Approach 2: Stack",
+                makeGoodStack(s));
+
+    printAnswer("Approach 3: String as Stack (Optimal)",
+                makeGoodOptimal(s));
+
+    return 0;
+}
