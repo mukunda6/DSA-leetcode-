@@ -1,0 +1,108 @@
+// Problem: Remove All Adjacent Duplicates In String
+// LeetCode 1047
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Recursive
+Time Complexity: O(n²)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string removeDuplicatesRecursive(string s) {
+
+    for (int i = 0; i < s.size() - 1; i++) {
+
+        if (s[i] == s[i + 1]) {
+
+            return removeDuplicatesRecursive(
+                s.substr(0, i) + s.substr(i + 2)
+            );
+        }
+    }
+
+    return s;
+}
+
+/*------------------------------------------------------------
+Approach 2: Stack
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string removeDuplicatesStack(string s) {
+
+    stack<char> st;
+
+    for (char ch : s) {
+
+        if (!st.empty() && st.top() == ch) {
+
+            st.pop();
+        }
+        else {
+
+            st.push(ch);
+        }
+    }
+
+    string ans;
+
+    while (!st.empty()) {
+
+        ans += st.top();
+        st.pop();
+    }
+
+    reverse(ans.begin(), ans.end());
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 3: String as Stack (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+string removeDuplicatesOptimal(string s) {
+
+    string ans;
+
+    for (char ch : s) {
+
+        if (!ans.empty() && ans.back() == ch) {
+
+            ans.pop_back();
+        }
+        else {
+
+            ans.push_back(ch);
+        }
+    }
+
+    return ans;
+}
+
+// Function to print answer
+void printAnswer(string approach, string ans) {
+
+    cout << approach << endl;
+    cout << "Output: " << ans << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    string s = "abbaca";
+
+    printAnswer("Approach 1: Recursive",
+                removeDuplicatesRecursive(s));
+
+    printAnswer("Approach 2: Stack",
+                removeDuplicatesStack(s));
+
+    printAnswer("Approach 3: String as Stack (Optimal)",
+                removeDuplicatesOptimal(s));
+
+    return 0;
+}
