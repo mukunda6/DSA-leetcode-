@@ -1,0 +1,206 @@
+// Problem: Generate Parentheses
+// LeetCode 22
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Brute Force (Generate All Binary Strings)
+Time Complexity: O(2^(2n) * n)
+Space Complexity: O(2^(2n))
+------------------------------------------------------------*/
+
+bool isValid(string s) {
+
+    int balance = 0;
+
+    for (char ch : s) {
+
+        if (ch == '(')
+            balance++;
+        else
+            balance--;
+
+        if (balance < 0)
+            return false;
+    }
+
+    return balance == 0;
+}
+
+void generateAll(int pos, int n, string current,
+                 vector<string>& ans) {
+
+    if (pos == 2 * n) {
+
+        if (isValid(current))
+            ans.push_back(current);
+
+        return;
+    }
+
+    generateAll(pos + 1, n, current + '(', ans);
+    generateAll(pos + 1, n, current + ')', ans);
+}
+
+vector<string> generateParenthesisBruteForce(int n) {
+
+    vector<string> ans;
+
+    generateAll(0, n, "", ans);
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 2: Backtracking (Optimal)
+Time Complexity: O(4^n / √n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+void backtrack(int open,
+               int close,
+               int n,
+               string current,
+               vector<string>& ans) {
+
+    if (current.size() == 2 * n) {
+
+        ans.push_back(current);
+        return;
+    }
+
+    if (open < n) {
+
+        backtrack(open + 1,
+                  close,
+                  n,
+                  current + '(',
+                  ans);
+    }
+
+    if (close < open) {
+
+        backtrack(open,
+                  close + 1,
+                  n,
+                  current + ')',
+                  ans);
+    }
+}
+
+vector<string> generateParenthesisBacktracking(int n) {
+
+    vector<string> ans;
+
+    backtrack(0, 0, n, "", ans);
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 3: BFS
+Time Complexity: O(4^n / √n)
+Space Complexity: O(4^n)
+------------------------------------------------------------*/
+
+struct Node {
+
+    string str;
+    int open;
+    int close;
+};
+
+vector<string> generateParenthesisBFS(int n) {
+
+    vector<string> ans;
+
+    queue<Node> q;
+
+    q.push({"", 0, 0});
+
+    while (!q.empty()) {
+
+        Node cur = q.front();
+        q.pop();
+
+        if (cur.str.size() == 2 * n) {
+
+            ans.push_back(cur.str);
+            continue;
+        }
+
+        if (cur.open < n)
+            q.push({cur.str + "(", cur.open + 1, cur.close});
+
+        if (cur.close < cur.open)
+            q.push({cur.str + ")", cur.open, cur.close + 1});
+    }
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 4: Dynamic Programming
+Time Complexity: O(Catalan Number)
+Space Complexity: O(Catalan Number)
+------------------------------------------------------------*/
+
+vector<string> generateParenthesisDP(int n) {
+
+    vector<vector<string>> dp(n + 1);
+
+    dp[0] = {""};
+
+    for (int i = 1; i <= n; i++) {
+
+        for (int j = 0; j < i; j++) {
+
+            for (string left : dp[j]) {
+
+                for (string right : dp[i - j - 1]) {
+
+                    dp[i].push_back("(" + left + ")" + right);
+                }
+            }
+        }
+    }
+
+    return dp[n];
+}
+
+// Function to print answer
+void printAnswer(string approach,
+                 vector<string> ans) {
+
+    cout << approach << endl;
+
+    cout << "[ ";
+
+    for (string s : ans)
+        cout << s << " ";
+
+    cout << "]" << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    int n = 3;
+
+    printAnswer("Approach 1: Brute Force",
+                generateParenthesisBruteForce(n));
+
+    printAnswer("Approach 2: Backtracking (Optimal)",
+                generateParenthesisBacktracking(n));
+
+    printAnswer("Approach 3: BFS",
+                generateParenthesisBFS(n));
+
+    printAnswer("Approach 4: Dynamic Programming",
+                generateParenthesisDP(n));
+
+    return 0;
+}
