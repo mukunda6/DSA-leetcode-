@@ -1,0 +1,179 @@
+// Problem: Island Perimeter
+// LeetCode 463
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Count All 4 Neighbors
+Time Complexity: O(m × n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+int islandPerimeterCountSides(vector<vector<int>> grid) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    int perimeter = 0;
+
+    // Traverse every cell
+    for (int i = 0; i < m; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            // Process only land cells
+            if (grid[i][j] == 1) {
+
+                // Every land cell contributes 4 sides
+                perimeter += 4;
+
+                // If upper cell is land,
+                // one side is shared.
+                if (i > 0 && grid[i - 1][j] == 1)
+                    perimeter--;
+
+                // If lower cell is land,
+                // one side is shared.
+                if (i < m - 1 && grid[i + 1][j] == 1)
+                    perimeter--;
+
+                // If left cell is land,
+                // one side is shared.
+                if (j > 0 && grid[i][j - 1] == 1)
+                    perimeter--;
+
+                // If right cell is land,
+                // one side is shared.
+                if (j < n - 1 && grid[i][j + 1] == 1)
+                    perimeter--;
+            }
+        }
+    }
+
+    return perimeter;
+}
+
+/*------------------------------------------------------------
+Approach 2: Count Shared Edges (Optimal)
+Time Complexity: O(m × n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+int islandPerimeterSharedEdges(vector<vector<int>> grid) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    int land = 0;
+    int shared = 0;
+
+    // Traverse every cell
+    for (int i = 0; i < m; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (grid[i][j] == 1) {
+
+                // Count every land cell
+                land++;
+
+                // Count shared edge with the cell below
+                if (i + 1 < m && grid[i + 1][j] == 1)
+                    shared++;
+
+                // Count shared edge with the cell to the right
+                if (j + 1 < n && grid[i][j + 1] == 1)
+                    shared++;
+            }
+        }
+    }
+
+    // Formula:
+    // Perimeter = (Land × 4) − (SharedEdges × 2)
+    return land * 4 - shared * 2;
+}
+
+/*------------------------------------------------------------
+Approach 3: DFS
+Time Complexity: O(m × n)
+Space Complexity: O(m × n)
+------------------------------------------------------------*/
+
+// DFS returns the perimeter contributed
+// by the current land cell.
+int dfs(vector<vector<int>>& grid, int i, int j) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    // Outside the grid contributes 1.
+    if (i < 0 || j < 0 || i >= m || j >= n)
+        return 1;
+
+    // Water contributes 1.
+    if (grid[i][j] == 0)
+        return 1;
+
+    // Already visited.
+    if (grid[i][j] == -1)
+        return 0;
+
+    // Mark current land cell as visited.
+    grid[i][j] = -1;
+
+    // Explore all four directions.
+    return dfs(grid, i + 1, j) +
+           dfs(grid, i - 1, j) +
+           dfs(grid, i, j + 1) +
+           dfs(grid, i, j - 1);
+}
+
+int islandPerimeterDFS(vector<vector<int>> grid) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    // Find the first land cell.
+    for (int i = 0; i < m; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (grid[i][j] == 1)
+                return dfs(grid, i, j);
+        }
+    }
+
+    return 0;
+}
+
+// Function to print answer
+void printAnswer(string approach, int ans) {
+
+    cout << approach << endl;
+    cout << "Island Perimeter: " << ans << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    // Example Test Case
+    vector<vector<int>> grid = {
+        {0,1,0,0},
+        {1,1,1,0},
+        {0,1,0,0},
+        {1,1,0,0}
+    };
+
+    printAnswer("Approach 1: Count All 4 Neighbors",
+                islandPerimeterCountSides(grid));
+
+    printAnswer("Approach 2: Count Shared Edges (Optimal)",
+                islandPerimeterSharedEdges(grid));
+
+    printAnswer("Approach 3: DFS",
+                islandPerimeterDFS(grid));
+
+    return 0;
+}
