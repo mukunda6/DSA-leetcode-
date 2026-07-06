@@ -1,0 +1,99 @@
+// Problem: Matrix Diagonal Sum
+// LeetCode 1572
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Brute Force (Nested Loops)
+Time Complexity: O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+int diagonalSumBruteForce(vector<vector<int>> mat) {
+
+    int primarySum = 0;
+    int secondarySum = 0;
+
+    int n = mat.size();
+
+    // Traverse every element in the matrix
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            // Add primary diagonal element
+            if (i == j)
+                primarySum += mat[i][j];
+
+            // Add secondary diagonal element
+            if (i + j == n - 1)
+                secondarySum += mat[i][j];
+        }
+    }
+
+    // If matrix size is odd,
+    // subtract the middle element once
+    // because it gets counted twice.
+    if (n % 2 == 1)
+        return primarySum + secondarySum - mat[n / 2][n / 2];
+
+    return primarySum + secondarySum;
+}
+
+/*------------------------------------------------------------
+Approach 2: Single Loop (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+int diagonalSumOptimal(vector<vector<int>> mat) {
+
+    int n = mat.size();
+
+    int sum = 0;
+
+    // Traverse only the diagonal elements
+    for (int i = 0; i < n; i++) {
+
+        // Primary diagonal
+        sum += mat[i][i];
+
+        // Secondary diagonal
+        sum += mat[i][n - 1 - i];
+    }
+
+    // Remove the duplicate middle element
+    // for odd-sized matrices.
+    if (n % 2 == 1)
+        sum -= mat[n / 2][n / 2];
+
+    return sum;
+}
+
+// Function to print answer
+void printAnswer(string approach, int ans) {
+
+    cout << approach << endl;
+    cout << "Diagonal Sum: " << ans << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    // Example Test Case
+    vector<vector<int>> mat = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    printAnswer("Approach 1: Brute Force",
+                diagonalSumBruteForce(mat));
+
+    printAnswer("Approach 2: Single Loop (Optimal)",
+                diagonalSumOptimal(mat));
+
+    return 0;
+}
