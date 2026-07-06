@@ -1,0 +1,236 @@
+// Problem: Determine Whether Matrix Can Be Obtained By Rotation
+// LeetCode 1886
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Extra Matrix Rotation
+Time Complexity: O(4 × n²) = O(n²)
+Space Complexity: O(n²)
+------------------------------------------------------------*/
+
+// Rotate matrix 90° clockwise using another matrix
+vector<vector<int>> rotate90(vector<vector<int>> mat) {
+
+    int n = mat.size();
+
+    vector<vector<int>> rotated(n, vector<int>(n));
+
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            rotated[j][n - 1 - i] = mat[i][j];
+        }
+    }
+
+    return rotated;
+}
+
+bool findRotationExtraMatrix(vector<vector<int>> mat,
+                             vector<vector<int>> target) {
+
+    // Try all four rotations
+    for (int rotation = 0; rotation < 4; rotation++) {
+
+        if (mat == target)
+            return true;
+
+        mat = rotate90(mat);
+    }
+
+    return false;
+}
+
+/*------------------------------------------------------------
+Approach 2: In-Place Rotation + Compare (Optimal)
+Time Complexity: O(4 × n²) = O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+bool findRotationOptimal(vector<vector<int>> mat,
+                         vector<vector<int>> target) {
+
+    int n = mat.size();
+
+    // Check original matrix
+    if (mat == target)
+        return true;
+
+    // Rotate at most 3 more times
+    int degree = 3;
+
+    while (degree--) {
+
+        // Transpose
+        for (int i = 0; i < n; i++) {
+
+            for (int j = i + 1; j < n; j++) {
+
+                swap(mat[i][j], mat[j][i]);
+            }
+        }
+
+        // Reverse each row
+        for (int i = 0; i < n; i++) {
+
+            reverse(mat[i].begin(), mat[i].end());
+        }
+
+        if (mat == target)
+            return true;
+    }
+
+    return false;
+}
+
+/*------------------------------------------------------------
+Approach 3: Direct Rotation Check
+Time Complexity: O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+bool findRotationDirect(vector<vector<int>> mat,
+                        vector<vector<int>> target) {
+
+    int n = mat.size();
+
+    vector<bool> flag(4, true);
+
+    // Check all four rotations together
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            // 0°
+            if (mat[i][j] != target[i][j])
+                flag[0] = false;
+
+            // 90°
+            if (mat[i][j] != target[j][n - i - 1])
+                flag[1] = false;
+
+            // 180°
+            if (mat[i][j] != target[n - i - 1][n - j - 1])
+                flag[2] = false;
+
+            // 270°
+            if (mat[i][j] != target[n - j - 1][i])
+                flag[3] = false;
+        }
+    }
+
+    return flag[0] || flag[1] || flag[2] || flag[3];
+}
+
+/*------------------------------------------------------------
+Approach 4: Four Separate Rotation Checks
+Time Complexity: O(n²)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+bool is0Degree(vector<vector<int>>& mat,
+               vector<vector<int>>& target) {
+
+    return mat == target;
+}
+
+bool is90Degree(vector<vector<int>>& mat,
+                vector<vector<int>>& target) {
+
+    int n = mat.size();
+
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (mat[i][j] != target[j][n - i - 1])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool is180Degree(vector<vector<int>>& mat,
+                 vector<vector<int>>& target) {
+
+    int n = mat.size();
+
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (mat[i][j] != target[n - i - 1][n - j - 1])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool is270Degree(vector<vector<int>>& mat,
+                 vector<vector<int>>& target) {
+
+    int n = mat.size();
+
+    for (int i = 0; i < n; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (mat[i][j] != target[n - j - 1][i])
+                return false;
+        }
+    }
+
+    return true;
+}
+
+bool findRotationFourChecks(vector<vector<int>> mat,
+                            vector<vector<int>> target) {
+
+    return is0Degree(mat, target) ||
+           is90Degree(mat, target) ||
+           is180Degree(mat, target) ||
+           is270Degree(mat, target);
+}
+
+// Function to print result
+void printAnswer(string approach, bool ans) {
+
+    cout << approach << endl;
+
+    cout << "Can Obtain Target: "
+         << (ans ? "True" : "False") << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<vector<int>> mat = {
+        {0,1},
+        {1,0}
+    };
+
+    vector<vector<int>> target = {
+        {1,0},
+        {0,1}
+    };
+
+    printAnswer("Approach 1: Extra Matrix Rotation",
+                findRotationExtraMatrix(mat, target));
+
+    printAnswer("Approach 2: In-Place Rotation + Compare",
+                findRotationOptimal(mat, target));
+
+    printAnswer("Approach 3: Direct Rotation Check",
+                findRotationDirect(mat, target));
+
+    printAnswer("Approach 4: Four Rotation Checks",
+                findRotationFourChecks(mat, target));
+
+    return 0;
+}
