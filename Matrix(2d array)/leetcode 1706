@@ -1,0 +1,82 @@
+// Problem: Where Will the Ball Fall
+// LeetCode 1706
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Simulation (Optimal)
+Time Complexity: O(m × n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<int> findBall(vector<vector<int>> grid) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    // Store the final position of each ball
+    vector<int> ans(n);
+
+    // Drop every ball
+    for (int ball = 0; ball < n; ball++) {
+
+        int col = ball;
+
+        // Move the ball row by row
+        for (int row = 0; row < m; row++) {
+
+            // Next column after following the slope
+            int nextCol = col + grid[row][col];
+
+            // Ball gets stuck if:
+            // 1. It hits the left/right wall.
+            // 2. It forms a V-shape.
+            if (nextCol < 0 ||
+                nextCol >= n ||
+                grid[row][nextCol] != grid[row][col]) {
+
+                col = -1;
+                break;
+            }
+
+            // Move to the next column
+            col = nextCol;
+        }
+
+        // Store the answer
+        ans[ball] = col;
+    }
+
+    return ans;
+}
+
+// Function to print answer
+void printAnswer(vector<int> ans) {
+
+    cout << "Ball Exit Columns: ";
+
+    for (int x : ans)
+        cout << x << " ";
+
+    cout << endl;
+}
+
+int main() {
+
+    // Example Test Case
+    vector<vector<int>> grid = {
+        {1,1,1,-1,-1},
+        {1,1,1,-1,-1},
+        {-1,-1,-1,1,1},
+        {1,1,1,1,-1},
+        {-1,-1,-1,-1,-1}
+    };
+
+    vector<int> ans = findBall(grid);
+
+    printAnswer(ans);
+
+    return 0;
+}
