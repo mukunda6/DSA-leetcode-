@@ -11,29 +11,36 @@ Time Complexity: O(m × n)
 Space Complexity: O(m × n)
 ------------------------------------------------------------*/
 
-void dfs(vector<vector<int>>& image, int sr, int sc, int oldColor, int color) {
+// DFS function to color all connected pixels
+void dfs(vector<vector<int>>& image, int sr, int sc, int oldColor, int newColor) {
 
     int m = image.size();
     int n = image[0].size();
 
+    // Check if the current cell is outside the grid
     if (sr < 0 || sc < 0 || sr >= m || sc >= n)
         return;
 
+    // Stop if the color is different from the original color
     if (image[sr][sc] != oldColor)
         return;
 
-    image[sr][sc] = color;
+    // Color the current pixel
+    image[sr][sc] = newColor;
 
-    dfs(image, sr + 1, sc, oldColor, color);
-    dfs(image, sr - 1, sc, oldColor, color);
-    dfs(image, sr, sc + 1, oldColor, color);
-    dfs(image, sr, sc - 1, oldColor, color);
+    // Visit all 4 directions
+    dfs(image, sr + 1, sc, oldColor, newColor); // Down
+    dfs(image, sr - 1, sc, oldColor, newColor); // Up
+    dfs(image, sr, sc + 1, oldColor, newColor); // Right
+    dfs(image, sr, sc - 1, oldColor, newColor); // Left
 }
 
 vector<vector<int>> floodFillDFSRecursive(vector<vector<int>> image, int sr, int sc, int color) {
 
     int oldColor = image[sr][sc];
 
+    // If the new color is the same as the current color,
+    // no changes are required.
     if (oldColor == color)
         return image;
 
@@ -43,7 +50,7 @@ vector<vector<int>> floodFillDFSRecursive(vector<vector<int>> image, int sr, int
 }
 
 /*------------------------------------------------------------
-Approach 2: DFS (Iterative using Stack)
+Approach 2: DFS (Using Stack)
 Time Complexity: O(m × n)
 Space Complexity: O(m × n)
 ------------------------------------------------------------*/
@@ -141,8 +148,9 @@ void printAnswer(string approach, vector<vector<int>> image) {
 
     for (auto row : image) {
 
-        for (int x : row)
-            cout << x << " ";
+        for (int pixel : row) {
+            cout << pixel << " ";
+        }
 
         cout << endl;
     }
