@@ -1,0 +1,109 @@
+// Problem: Cells with Odd Values in a Matrix
+// LeetCode 1252
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Simulation (Brute Force)
+Time Complexity: O(k × (m + n) + m × n)
+Space Complexity: O(m × n)
+------------------------------------------------------------*/
+
+int oddCellsSimulation(int m, int n, vector<vector<int>> indices) {
+
+    // Create a matrix initialized with 0
+    vector<vector<int>> matrix(m, vector<int>(n, 0));
+
+    // Perform all increment operations
+    for (auto index : indices) {
+
+        int row = index[0];
+        int col = index[1];
+
+        // Increment every element in the row
+        for (int j = 0; j < n; j++)
+            matrix[row][j]++;
+
+        // Increment every element in the column
+        for (int i = 0; i < m; i++)
+            matrix[i][col]++;
+    }
+
+    int oddCount = 0;
+
+    // Count odd-valued cells
+    for (int i = 0; i < m; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            if (matrix[i][j] % 2 == 1)
+                oddCount++;
+        }
+    }
+
+    return oddCount;
+}
+
+/*------------------------------------------------------------
+Approach 2: Row & Column Count (Optimal)
+Time Complexity: O(k + m × n)
+Space Complexity: O(m + n)
+------------------------------------------------------------*/
+
+int oddCellsOptimal(int m, int n, vector<vector<int>> indices) {
+
+    // Store the number of increments
+    vector<int> row(m, 0);
+    vector<int> col(n, 0);
+
+    // Count row and column increments
+    for (auto index : indices) {
+
+        row[index[0]]++;
+        col[index[1]]++;
+    }
+
+    int oddCount = 0;
+
+    // Check every cell
+    for (int i = 0; i < m; i++) {
+
+        for (int j = 0; j < n; j++) {
+
+            // Cell value = row increments + column increments
+            if ((row[i] + col[j]) % 2 == 1)
+                oddCount++;
+        }
+    }
+
+    return oddCount;
+}
+
+// Function to print answer
+void printAnswer(string approach, int ans) {
+
+    cout << approach << endl;
+    cout << "Odd Cells: " << ans << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    int m = 2;
+    int n = 3;
+
+    vector<vector<int>> indices = {
+        {0,1},
+        {1,1}
+    };
+
+    printAnswer("Approach 1: Simulation",
+                oddCellsSimulation(m, n, indices));
+
+    printAnswer("Approach 2: Row & Column Count (Optimal)",
+                oddCellsOptimal(m, n, indices));
+
+    return 0;
+}
