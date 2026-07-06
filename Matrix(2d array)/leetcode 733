@@ -1,1 +1,175 @@
+// Problem: Flood Fill
+// LeetCode 733
+// Platform: LeetCode / CodeChef
 
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: DFS (Recursive)
+Time Complexity: O(m × n)
+Space Complexity: O(m × n)
+------------------------------------------------------------*/
+
+void dfs(vector<vector<int>>& image, int sr, int sc, int oldColor, int color) {
+
+    int m = image.size();
+    int n = image[0].size();
+
+    if (sr < 0 || sc < 0 || sr >= m || sc >= n)
+        return;
+
+    if (image[sr][sc] != oldColor)
+        return;
+
+    image[sr][sc] = color;
+
+    dfs(image, sr + 1, sc, oldColor, color);
+    dfs(image, sr - 1, sc, oldColor, color);
+    dfs(image, sr, sc + 1, oldColor, color);
+    dfs(image, sr, sc - 1, oldColor, color);
+}
+
+vector<vector<int>> floodFillDFSRecursive(vector<vector<int>> image, int sr, int sc, int color) {
+
+    int oldColor = image[sr][sc];
+
+    if (oldColor == color)
+        return image;
+
+    dfs(image, sr, sc, oldColor, color);
+
+    return image;
+}
+
+/*------------------------------------------------------------
+Approach 2: DFS (Iterative using Stack)
+Time Complexity: O(m × n)
+Space Complexity: O(m × n)
+------------------------------------------------------------*/
+
+vector<vector<int>> floodFillDFSStack(vector<vector<int>> image, int sr, int sc, int color) {
+
+    int oldColor = image[sr][sc];
+
+    if (oldColor == color)
+        return image;
+
+    int m = image.size();
+    int n = image[0].size();
+
+    stack<pair<int, int>> st;
+
+    st.push({sr, sc});
+
+    while (!st.empty()) {
+
+        auto [r, c] = st.top();
+        st.pop();
+
+        if (r < 0 || c < 0 || r >= m || c >= n)
+            continue;
+
+        if (image[r][c] != oldColor)
+            continue;
+
+        image[r][c] = color;
+
+        st.push({r + 1, c});
+        st.push({r - 1, c});
+        st.push({r, c + 1});
+        st.push({r, c - 1});
+    }
+
+    return image;
+}
+
+/*------------------------------------------------------------
+Approach 3: BFS (Queue)
+Time Complexity: O(m × n)
+Space Complexity: O(m × n)
+------------------------------------------------------------*/
+
+vector<vector<int>> floodFillBFS(vector<vector<int>> image, int sr, int sc, int color) {
+
+    int oldColor = image[sr][sc];
+
+    if (oldColor == color)
+        return image;
+
+    int m = image.size();
+    int n = image[0].size();
+
+    queue<pair<int, int>> q;
+
+    q.push({sr, sc});
+
+    image[sr][sc] = color;
+
+    int dr[] = {-1, 1, 0, 0};
+    int dc[] = {0, 0, -1, 1};
+
+    while (!q.empty()) {
+
+        auto [r, c] = q.front();
+        q.pop();
+
+        for (int i = 0; i < 4; i++) {
+
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+
+            if (nr >= 0 &&
+                nc >= 0 &&
+                nr < m &&
+                nc < n &&
+                image[nr][nc] == oldColor) {
+
+                image[nr][nc] = color;
+                q.push({nr, nc});
+            }
+        }
+    }
+
+    return image;
+}
+
+// Function to print matrix
+void printAnswer(string approach, vector<vector<int>> image) {
+
+    cout << approach << endl;
+
+    for (auto row : image) {
+
+        for (int x : row)
+            cout << x << " ";
+
+        cout << endl;
+    }
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<vector<int>> image = {
+        {1, 1, 1},
+        {1, 1, 0},
+        {1, 0, 1}
+    };
+
+    int sr = 1;
+    int sc = 1;
+    int color = 2;
+
+    printAnswer("Approach 1: DFS (Recursive)",
+                floodFillDFSRecursive(image, sr, sc, color));
+
+    printAnswer("Approach 2: DFS (Stack)",
+                floodFillDFSStack(image, sr, sc, color));
+
+    printAnswer("Approach 3: BFS (Queue)",
+                floodFillBFS(image, sr, sc, color));
+
+    return 0;
+}
