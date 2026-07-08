@@ -29,7 +29,7 @@ Time Complexity: O(h)
 Space Complexity: O(h)
 ------------------------------------------------------------*/
 
-TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+TreeNode* lowestCommonAncestorRecursive(TreeNode* root, TreeNode* p, TreeNode* q) {
 
     // Empty tree.
     if (root == NULL) return NULL;
@@ -39,19 +39,49 @@ TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
 
     // Both nodes are in the right subtree.
     if (curr < p->val && curr < q->val)
-        return lowestCommonAncestor(root->right, p, q);
+        return lowestCommonAncestorRecursive(root->right, p, q);
 
     // Both nodes are in the left subtree.
     if (curr > p->val && curr > q->val)
-        return lowestCommonAncestor(root->left, p, q);
+        return lowestCommonAncestorRecursive(root->left, p, q);
 
     // Current node is the Lowest Common Ancestor.
     return root;
 }
 
-// Function to print answer.
-void printAnswer(TreeNode* node) {
+/*------------------------------------------------------------
+Approach 2: Iterative BST Traversal
+Time Complexity: O(h)
+Space Complexity: O(1)
+------------------------------------------------------------*/
 
+TreeNode* lowestCommonAncestorIterative(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+    while (root != NULL) {
+
+        // Current node value.
+        int curr = root->val;
+
+        // Move to the right subtree.
+        if (curr < p->val && curr < q->val)
+            root = root->right;
+
+        // Move to the left subtree.
+        else if (curr > p->val && curr > q->val)
+            root = root->left;
+
+        // Lowest Common Ancestor found.
+        else
+            return root;
+    }
+
+    return NULL;
+}
+
+// Function to print answer.
+void printAnswer(string approach, TreeNode* node) {
+
+    cout << approach << endl;
     cout << "Lowest Common Ancestor: " << node->val << endl;
     cout << "----------------------------------------" << endl;
 }
@@ -82,10 +112,14 @@ int main() {
     root->right->left = new TreeNode(7);
     root->right->right = new TreeNode(9);
 
-    TreeNode* p = root->left;              // Node 2
-    TreeNode* q = root->right;             // Node 8
+    TreeNode* p = root->left;       // Node 2
+    TreeNode* q = root->right;      // Node 8
 
-    printAnswer(lowestCommonAncestor(root, p, q));
+    printAnswer("Approach 1: Recursive BST Traversal",
+                lowestCommonAncestorRecursive(root, p, q));
+
+    printAnswer("Approach 2: Iterative BST Traversal",
+                lowestCommonAncestorIterative(root, p, q));
 
     return 0;
 }
