@@ -1,0 +1,125 @@
+// Problem: Binary Tree Level Order Traversal
+// LeetCode 102
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: BFS (Queue) - Optimal
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<vector<int>> levelOrder(TreeNode* root) {
+
+    // Store the final level order traversal
+    vector<vector<int>> ans;
+
+    // Empty tree
+    if (root == NULL)
+        return ans;
+
+    // Queue for BFS
+    queue<TreeNode*> q;
+
+    // Start with the root node
+    q.push(root);
+
+    while (!q.empty()) {
+
+        // Number of nodes at the current level
+        int size = q.size();
+
+        // Store values of the current level
+        vector<int> level;
+
+        // Traverse all nodes of the current level
+        for (int i = 0; i < size; i++) {
+
+            TreeNode* node = q.front();
+            q.pop();
+
+            // Store current node value
+            level.push_back(node->val);
+
+            // Push left child if it exists
+            if (node->left != NULL) {
+
+                q.push(node->left);
+            }
+
+            // Push right child if it exists
+            if (node->right != NULL) {
+
+                q.push(node->right);
+            }
+        }
+
+        // Add current level to the answer
+        ans.push_back(level);
+    }
+
+    return ans;
+}
+
+// Function to print answer
+void printAnswer(vector<vector<int>> ans) {
+
+    cout << "Level Order Traversal:" << endl;
+
+    for (auto level : ans) {
+
+        cout << "[ ";
+
+        for (int x : level)
+            cout << x << " ";
+
+        cout << "]" << endl;
+    }
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+             3
+            / \
+           9  20
+             /  \
+            15   7
+    */
+
+    TreeNode* root = new TreeNode(3);
+
+    root->left = new TreeNode(9);
+
+    root->right = new TreeNode(20);
+    root->right->left = new TreeNode(15);
+    root->right->right = new TreeNode(7);
+
+    vector<vector<int>> ans = levelOrder(root);
+
+    printAnswer(ans);
+
+    return 0;
+}
