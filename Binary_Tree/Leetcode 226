@@ -1,87 +1,176 @@
 // Problem: Invert Binary Tree
-// Platform: LeetCode / CodeChef / GitHub
-//
-// -------------------------------------------------
-// Approach: Recursion (DFS)
-// -------------------------------------------------
-// Idea:
-// - Swap left and right child of every node
-// - Recursively invert subtrees
-//
-// Time Complexity: O(n)
-// Space Complexity: O(h)  [recursion stack]
-// -------------------------------------------------
+// LeetCode 226
+// Platform: LeetCode / CodeChef
 
 #include <bits/stdc++.h>
 using namespace std;
 
-// Definition for a binary tree node
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
 struct TreeNode {
+
     int val;
-    TreeNode* left;
-    TreeNode* right;
+    TreeNode *left;
+    TreeNode *right;
 
     TreeNode(int x) {
+
         val = x;
-        left = right = NULL;
+        left = NULL;
+        right = NULL;
     }
 };
 
-class Solution {
-public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (root == NULL) {
-            return NULL;
+/*------------------------------------------------------------
+Approach 1: Recursive DFS (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+TreeNode* invertTreeDFS(TreeNode* root) {
+
+    // Base Case
+    if (root == NULL)
+        return NULL;
+
+    // Swap left and right child
+    swap(root->left, root->right);
+
+    // Recursively invert left subtree
+    invertTreeDFS(root->left);
+
+    // Recursively invert right subtree
+    invertTreeDFS(root->right);
+
+    return root;
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative BFS (Queue)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+TreeNode* invertTreeBFS(TreeNode* root) {
+
+    if (root == NULL)
+        return NULL;
+
+    queue<TreeNode*> q;
+
+    q.push(root);
+
+    while (!q.empty()) {
+
+        TreeNode* node = q.front();
+        q.pop();
+
+        // Swap children
+        swap(node->left, node->right);
+
+        if (node->left)
+            q.push(node->left);
+
+        if (node->right)
+            q.push(node->right);
+    }
+
+    return root;
+}
+
+/*------------------------------------------------------------
+Approach 3: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+TreeNode* invertTreeStack(TreeNode* root) {
+
+    if (root == NULL)
+        return NULL;
+
+    stack<TreeNode*> st;
+
+    st.push(root);
+
+    while (!st.empty()) {
+
+        TreeNode* node = st.top();
+        st.pop();
+
+        // Swap children
+        swap(node->left, node->right);
+
+        if (node->left)
+            st.push(node->left);
+
+        if (node->right)
+            st.push(node->right);
+    }
+
+    return root;
+}
+
+/*------------------------------------------------------------
+Level Order Traversal
+------------------------------------------------------------*/
+
+void levelOrder(TreeNode* root) {
+
+    if (!root)
+        return;
+
+    queue<TreeNode*> q;
+
+    q.push(root);
+
+    while (!q.empty()) {
+
+        int size = q.size();
+
+        while (size--) {
+
+            TreeNode* node = q.front();
+            q.pop();
+
+            cout << node->val << " ";
+
+            if (node->left)
+                q.push(node->left);
+
+            if (node->right)
+                q.push(node->right);
         }
-
-        // Swap left and right subtrees
-        swap(root->left, root->right);
-
-        // Recursively invert children
-        invertTree(root->left);
-        invertTree(root->right);
-
-        return root;
     }
-};
 
-// Helper function: Inorder traversal (for checking)
-void inorder(TreeNode* root) {
-    if (!root) return;
-    inorder(root->left);
-    cout << root->val << " ";
-    inorder(root->right);
+    cout << endl;
 }
 
 int main() {
+
     /*
-        Original Tree:
-              4
-             / \
-            2   7
-           / \ / \
-          1  3 6  9
+            4
+          /   \
+         2     7
+        / \   / \
+       1   3 6   9
     */
 
     TreeNode* root = new TreeNode(4);
+
     root->left = new TreeNode(2);
     root->right = new TreeNode(7);
+
     root->left->left = new TreeNode(1);
     root->left->right = new TreeNode(3);
+
     root->right->left = new TreeNode(6);
     root->right->right = new TreeNode(9);
 
-    Solution obj;
-
-    cout << "Inorder before inversion: ";
-    inorder(root);
-    cout << endl;
-
-    obj.invertTree(root);
-
-    cout << "Inorder after inversion : ";
-    inorder(root);
-    cout << endl;
+    cout << "Approach 1: Recursive DFS" << endl;
+    levelOrder(invertTreeDFS(root));
 
     return 0;
 }
