@@ -29,63 +29,54 @@ Time Complexity: O(n²)
 Space Complexity: O(h)
 ------------------------------------------------------------*/
 
-// Find maximum value in left subtree
+// Find maximum value in left subtree.
 int findMax(TreeNode* root) {
 
-    while (root->right)
-        root = root->right;
+    while (root->right) root = root->right;
 
     return root->val;
 }
 
-// Find minimum value in right subtree
+// Find minimum value in right subtree.
 int findMin(TreeNode* root) {
 
-    while (root->left)
-        root = root->left;
+    while (root->left) root = root->left;
 
     return root->val;
 }
 
 bool isValidBSTBrute(TreeNode* root) {
 
-    // Empty tree is a valid BST
-    if (root == NULL)
-        return true;
+    // Empty tree is a valid BST.
+    if (root == NULL) return true;
 
-    // Left subtree must contain smaller values
-    if (root->left && findMax(root->left) >= root->val)
-        return false;
+    // Left subtree must contain smaller values.
+    if (root->left && findMax(root->left) >= root->val) return false;
 
-    // Right subtree must contain greater values
-    if (root->right && findMin(root->right) <= root->val)
-        return false;
+    // Right subtree must contain greater values.
+    if (root->right && findMin(root->right) <= root->val) return false;
 
-    // Check left and right subtrees
-    return isValidBSTBrute(root->left) &&
-           isValidBSTBrute(root->right);
+    // Recursively validate left and right subtrees.
+    return isValidBSTBrute(root->left) && isValidBSTBrute(root->right);
 }
 
 /*------------------------------------------------------------
-Approach 2: Recursive DFS with Valid Range (Optimal)
+Approach 2: DFS with Valid Range (Optimal)
 Time Complexity: O(n)
 Space Complexity: O(h)
 ------------------------------------------------------------*/
 
-// Check whether every node lies within its valid range
+// Validate every node using its allowed range.
 bool isValid(TreeNode* root, long long minVal, long long maxVal) {
 
-    // Empty tree is valid
-    if (root == NULL)
-        return true;
+    // Empty tree is valid.
+    if (root == NULL) return true;
 
-    // Current node violates BST property
-    if (root->val <= minVal || root->val >= maxVal)
-        return false;
+    // Current node violates BST property.
+    if (root->val <= minVal || root->val >= maxVal) return false;
 
-    // Check left and right subtree
-    return isValid(root->left, minVal, root->val) &&
-           isValid(root->right, root->val, maxVal);
+    // Check left and right subtree.
+    return isValid(root->left, minVal, root->val) && isValid(root->right, root->val, maxVal);
 }
 
 bool isValidBST(TreeNode* root) {
@@ -93,23 +84,20 @@ bool isValidBST(TreeNode* root) {
     return isValid(root, LLONG_MIN, LLONG_MAX);
 }
 
-// Function to print answer
+// Function to print answer.
 void printAnswer(string approach, bool ans) {
 
     cout << approach << endl;
-
-    cout << "Valid BST: "
-         << (ans ? "True" : "False") << endl;
-
+    cout << "Valid BST: " << (ans ? "True" : "False") << endl;
     cout << "----------------------------------------" << endl;
 }
 
 int main() {
 
     /*
-            2
-           / \
-          1   3
+             2
+            / \
+           1   3
     */
 
     TreeNode* root = new TreeNode(2);
@@ -117,11 +105,9 @@ int main() {
     root->left = new TreeNode(1);
     root->right = new TreeNode(3);
 
-    printAnswer("Approach 1: Brute Force",
-                isValidBSTBrute(root));
+    printAnswer("Approach 1: Brute Force", isValidBSTBrute(root));
 
-    printAnswer("Approach 2: DFS with Valid Range",
-                isValidBST(root));
+    printAnswer("Approach 2: DFS with Valid Range", isValidBST(root));
 
     return 0;
 }
