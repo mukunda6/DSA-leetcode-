@@ -1,0 +1,91 @@
+// Problem: Lowest Common Ancestor of a Binary Search Tree
+// LeetCode 235
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive BST Traversal (Optimal)
+Time Complexity: O(h)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+    // Empty tree.
+    if (root == NULL) return NULL;
+
+    // Current node value.
+    int curr = root->val;
+
+    // Both nodes are in the right subtree.
+    if (curr < p->val && curr < q->val)
+        return lowestCommonAncestor(root->right, p, q);
+
+    // Both nodes are in the left subtree.
+    if (curr > p->val && curr > q->val)
+        return lowestCommonAncestor(root->left, p, q);
+
+    // Current node is the Lowest Common Ancestor.
+    return root;
+}
+
+// Function to print answer.
+void printAnswer(TreeNode* node) {
+
+    cout << "Lowest Common Ancestor: " << node->val << endl;
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+                 6
+               /   \
+              2     8
+             / \   / \
+            0   4 7   9
+               / \
+              3   5
+    */
+
+    TreeNode* root = new TreeNode(6);
+
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(8);
+
+    root->left->left = new TreeNode(0);
+    root->left->right = new TreeNode(4);
+
+    root->left->right->left = new TreeNode(3);
+    root->left->right->right = new TreeNode(5);
+
+    root->right->left = new TreeNode(7);
+    root->right->right = new TreeNode(9);
+
+    TreeNode* p = root->left;              // Node 2
+    TreeNode* q = root->right;             // Node 8
+
+    printAnswer(lowestCommonAncestor(root, p, q));
+
+    return 0;
+}
