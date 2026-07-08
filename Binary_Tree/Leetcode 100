@@ -1,54 +1,145 @@
 // Problem: Same Tree
-// Platform: LeetCode / CodeChef / GitHub
-//
-// -------------------------------------------------
-// Approach: Recursion (DFS)
-// -------------------------------------------------
-// Idea:
-// - If both nodes are NULL → same
-// - If one is NULL → not same
-// - Values must match
-// - Left subtree and right subtree must be same
-//
-// Time Complexity: O(n)
-// Space Complexity: O(h) [recursion stack]
-// -------------------------------------------------
+// LeetCode 100
+// Platform: LeetCode / CodeChef
 
 #include <bits/stdc++.h>
 using namespace std;
 
-// Definition for a binary tree node
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
 struct TreeNode {
+
     int val;
-    TreeNode* left;
-    TreeNode* right;
+    TreeNode *left;
+    TreeNode *right;
 
     TreeNode(int x) {
+
         val = x;
-        left = right = NULL;
+        left = NULL;
+        right = NULL;
     }
 };
 
-class Solution {
-public:
-    bool isSameTree(TreeNode* p, TreeNode* q) {
-        if (p == NULL || q == NULL) {
-            return p == q;   // both NULL → true, else false
-        }
+/*------------------------------------------------------------
+Approach 1: Recursive DFS (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
 
-        bool isLeftSame = isSameTree(p->left, q->left);
-        bool isRightSame = isSameTree(p->right, q->right);
+bool isSameTreeDFS(TreeNode* p, TreeNode* q) {
 
-        return isLeftSame && isRightSame && p->val == q->val;
+  // If either node is NULL,
+    // return true only if both are NULL.
+    if (p == NULL || q == NULL)
+        return p == q;
+
+    // Compare current node values
+    // and recursively compare left and right subtrees.
+    return p->val == q->val &&
+           isSameTree(p->left, q->left) &&
+           isSameTree(p->right, q->right);
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative BFS (Queue)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+bool isSameTreeBFS(TreeNode* p, TreeNode* q) {
+
+    queue<pair<TreeNode*, TreeNode*>> qu;
+
+    qu.push({p, q});
+
+    while (!qu.empty()) {
+
+        auto current = qu.front();
+        qu.pop();
+
+        TreeNode* first = current.first;
+        TreeNode* second = current.second;
+
+        // Both are NULL
+        if (first == NULL && second == NULL)
+            continue;
+
+        // One is NULL
+        if (first == NULL || second == NULL)
+            return false;
+
+        // Values are different
+        if (first->val != second->val)
+            return false;
+
+        qu.push({first->left, second->left});
+        qu.push({first->right, second->right});
     }
-};
+
+    return true;
+}
+
+/*------------------------------------------------------------
+Approach 3: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+bool isSameTreeStack(TreeNode* p, TreeNode* q) {
+
+    stack<pair<TreeNode*, TreeNode*>> st;
+
+    st.push({p, q});
+
+    while (!st.empty()) {
+
+        auto current = st.top();
+        st.pop();
+
+        TreeNode* first = current.first;
+        TreeNode* second = current.second;
+
+        // Both are NULL
+        if (first == NULL && second == NULL)
+            continue;
+
+        // One is NULL
+        if (first == NULL || second == NULL)
+            return false;
+
+        // Values are different
+        if (first->val != second->val)
+            return false;
+
+        st.push({first->left, second->left});
+        st.push({first->right, second->right});
+    }
+
+    return true;
+}
+
+// Function to print answer
+void printAnswer(string approach, bool ans) {
+
+    cout << approach << endl;
+
+    cout << "Same Tree: "
+         << (ans ? "True" : "False") << endl;
+
+    cout << "----------------------------------------" << endl;
+}
 
 int main() {
+
     /*
-        Tree 1:        Tree 2:
-            1              1
-           / \            / \
-          2   3          2   3
+          Tree 1        Tree 2
+
+             1             1
+            / \           / \
+           2   3         2   3
     */
 
     TreeNode* p = new TreeNode(1);
@@ -59,10 +150,14 @@ int main() {
     q->left = new TreeNode(2);
     q->right = new TreeNode(3);
 
-    Solution obj;
+    printAnswer("Approach 1: Recursive DFS",
+                isSameTreeDFS(p, q));
 
-    cout << "Are both trees same? "
-         << (obj.isSameTree(p, q) ? "Yes" : "No") << endl;
+    printAnswer("Approach 2: Iterative BFS",
+                isSameTreeBFS(p, q));
+
+    printAnswer("Approach 3: Iterative DFS",
+                isSameTreeStack(p, q));
 
     return 0;
 }
