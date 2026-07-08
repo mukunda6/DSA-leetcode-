@@ -1,62 +1,160 @@
 // Problem: Maximum Depth of Binary Tree
-// Platform: LeetCode / CodeChef / GitHub
-//
-// -------------------------------------------------
-// Approach: Recursion (DFS)
-// -------------------------------------------------
-// Idea:
-// - Depth of a tree = 1 + max(depth of left, depth of right)
-//
-// Time Complexity: O(n)
-// Space Complexity: O(h)  [recursion stack]
-// -------------------------------------------------
+// LeetCode 104
+// Platform: LeetCode / CodeChef
 
 #include <bits/stdc++.h>
 using namespace std;
 
-// Definition for a binary tree node
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
 struct TreeNode {
+
     int val;
-    TreeNode* left;
-    TreeNode* right;
+    TreeNode *left;
+    TreeNode *right;
 
     TreeNode(int x) {
+
         val = x;
-        left = right = NULL;
+        left = NULL;
+        right = NULL;
     }
 };
 
-class Solution {
-public:
-    int maxDepth(TreeNode* root) {
-        if (root == NULL) {
-            return 0;
+/*------------------------------------------------------------
+Approach 1: Recursive DFS (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+int maxDepthDFS(TreeNode* root) {
+
+    // Base Case
+    if (root == NULL)
+        return 0;
+
+    // Find depth of left subtree
+    int leftDepth = maxDepthDFS(root->left);
+
+    // Find depth of right subtree
+    int rightDepth = maxDepthDFS(root->right);
+
+    // Current depth = 1 + maximum of both subtrees
+    return 1 + max(leftDepth, rightDepth);
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative BFS (Level Order Traversal)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+int maxDepthBFS(TreeNode* root) {
+
+    if (root == NULL)
+        return 0;
+
+    queue<TreeNode*> q;
+    q.push(root);
+
+    int depth = 0;
+
+    // Traverse level by level
+    while (!q.empty()) {
+
+        int size = q.size();
+
+        while (size--) {
+
+            TreeNode* node = q.front();
+            q.pop();
+
+            if (node->left)
+                q.push(node->left);
+
+            if (node->right)
+                q.push(node->right);
         }
-        int left = maxDepth(root->left);
-        int right = maxDepth(root->right);
-        return max(left, right) + 1;
+
+        // One level completed
+        depth++;
     }
-};
+
+    return depth;
+}
+
+/*------------------------------------------------------------
+Approach 3: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+int maxDepthStack(TreeNode* root) {
+
+    if (root == NULL)
+        return 0;
+
+    stack<pair<TreeNode*, int>> st;
+
+    st.push({root, 1});
+
+    int maxDepth = 0;
+
+    while (!st.empty()) {
+
+        auto current = st.top();
+        st.pop();
+
+        TreeNode* node = current.first;
+        int depth = current.second;
+
+        maxDepth = max(maxDepth, depth);
+
+        if (node->left)
+            st.push({node->left, depth + 1});
+
+        if (node->right)
+            st.push({node->right, depth + 1});
+    }
+
+    return maxDepth;
+}
 
 int main() {
+
     /*
-        Example Tree:
-              3
-             / \
-            9  20
-               / \
-              15  7
+             3
+            / \
+           9  20
+             /  \
+            15   7
     */
 
     TreeNode* root = new TreeNode(3);
+
     root->left = new TreeNode(9);
+
     root->right = new TreeNode(20);
     root->right->left = new TreeNode(15);
     root->right->right = new TreeNode(7);
 
-    Solution obj;
-    cout << "Maximum Depth of Binary Tree: "
-         << obj.maxDepth(root) << endl;
+    cout << "Approach 1: Recursive DFS" << endl;
+    cout << "Maximum Depth: "
+         << maxDepthDFS(root) << endl;
+
+    cout << "----------------------------------------" << endl;
+
+    cout << "Approach 2: Iterative BFS" << endl;
+    cout << "Maximum Depth: "
+         << maxDepthBFS(root) << endl;
+
+    cout << "----------------------------------------" << endl;
+
+    cout << "Approach 3: Iterative DFS" << endl;
+    cout << "Maximum Depth: "
+         << maxDepthStack(root) << endl;
 
     return 0;
 }
