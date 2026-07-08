@@ -1,0 +1,91 @@
+// Problem: Path Sum
+// LeetCode 112
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive DFS (Optimal)
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+bool hasPathSum(TreeNode* root, int targetSum) {
+
+    // Empty tree
+    if (root == NULL)
+        return false;
+
+    // If current node is a leaf node,
+    // check whether the remaining sum equals its value.
+    if (root->left == NULL && root->right == NULL)
+        return root->val == targetSum;
+
+    // Search in left and right subtree
+    return hasPathSum(root->left, targetSum - root->val) || hasPathSum(root->right, targetSum - root->val);
+}
+
+// Function to print answer
+void printAnswer(bool ans) {
+
+    cout << "Path Exists: "
+         << (ans ? "True" : "False") << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+                 5
+               /   \
+              4     8
+             /     / \
+            11    13  4
+           /  \         \
+          7    2         1
+
+        Target Sum = 22
+
+        Path:
+        5 -> 4 -> 11 -> 2
+    */
+
+    TreeNode* root = new TreeNode(5);
+
+    root->left = new TreeNode(4);
+    root->right = new TreeNode(8);
+
+    root->left->left = new TreeNode(11);
+    root->left->left->left = new TreeNode(7);
+    root->left->left->right = new TreeNode(2);
+
+    root->right->left = new TreeNode(13);
+    root->right->right = new TreeNode(4);
+    root->right->right->right = new TreeNode(1);
+
+    int targetSum = 22;
+
+    printAnswer(hasPathSum(root, targetSum));
+
+    return 0;
+}
