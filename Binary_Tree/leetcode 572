@@ -1,0 +1,106 @@
+// Problem: Subtree of Another Tree
+// LeetCode 572
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive DFS + Same Tree (Optimal)
+Time Complexity: O(m × n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+// Check whether two trees are identical
+bool isSameTree(TreeNode* p, TreeNode* q) {
+
+    // If either node is NULL,
+    // both must be NULL.
+    if (p == NULL || q == NULL)
+        return p == q;
+
+    // Compare current node
+    // and both subtrees.
+    return p->val == q->val &&
+           isSameTree(p->left, q->left) &&
+           isSameTree(p->right, q->right);
+}
+
+// Check whether subRoot exists inside root
+bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+
+    // Base Case
+    if (root == NULL || subRoot == NULL)
+        return root == subRoot;
+
+    // If values match,
+    // compare both trees.
+    if (root->val == subRoot->val &&
+        isSameTree(root, subRoot))
+        return true;
+
+    // Search left and right subtree
+    return isSubtree(root->left, subRoot) ||
+           isSubtree(root->right, subRoot);
+}
+
+// Function to print answer
+void printAnswer(bool ans) {
+
+    cout << "Is Subtree: "
+         << (ans ? "True" : "False") << endl;
+}
+
+int main() {
+
+    /*
+             Root
+
+                3
+              /   \
+             4     5
+            / \
+           1   2
+
+            SubRoot
+
+              4
+             / \
+            1   2
+    */
+
+    TreeNode* root = new TreeNode(3);
+
+    root->left = new TreeNode(4);
+    root->right = new TreeNode(5);
+
+    root->left->left = new TreeNode(1);
+    root->left->right = new TreeNode(2);
+
+    TreeNode* subRoot = new TreeNode(4);
+
+    subRoot->left = new TreeNode(1);
+    subRoot->right = new TreeNode(2);
+
+    printAnswer(isSubtree(root, subRoot));
+
+    return 0;
+}
