@@ -1,0 +1,129 @@
+// Problem: Binary Tree Inorder Traversal
+// LeetCode 94
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive DFS
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+// Perform inorder traversal recursively.
+void dfs(TreeNode* root, vector<int>& ans) {
+
+    // Empty tree.
+    if (root == NULL) return;
+
+    // Visit left subtree.
+    dfs(root->left, ans);
+
+    // Visit root.
+    ans.push_back(root->val);
+
+    // Visit right subtree.
+    dfs(root->right, ans);
+}
+
+vector<int> inorderTraversalRecursive(TreeNode* root) {
+
+    vector<int> ans;
+
+    dfs(root, ans);
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<int> inorderTraversalIterative(TreeNode* root) {
+
+    vector<int> ans;
+
+    stack<TreeNode*> st;
+
+    while (root != NULL || !st.empty()) {
+
+        // Move to the leftmost node.
+        while (root != NULL) {
+
+            st.push(root);
+
+            root = root->left;
+        }
+
+        root = st.top();
+        st.pop();
+
+        // Visit current node.
+        ans.push_back(root->val);
+
+        // Move to right subtree.
+        root = root->right;
+    }
+
+    return ans;
+}
+
+// Function to print answer.
+void printAnswer(string approach, vector<int> ans) {
+
+    cout << approach << endl;
+
+    cout << "Inorder Traversal: ";
+
+    for (int x : ans)
+        cout << x << " ";
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+             1
+              \
+               2
+              /
+             3
+    */
+
+    TreeNode* root = new TreeNode(1);
+
+    root->right = new TreeNode(2);
+    root->right->left = new TreeNode(3);
+
+    printAnswer("Approach 1: Recursive DFS",
+                inorderTraversalRecursive(root));
+
+    printAnswer("Approach 2: Iterative DFS",
+                inorderTraversalIterative(root));
+
+    return 0;
+}
