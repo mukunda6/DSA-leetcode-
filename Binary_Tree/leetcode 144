@@ -1,0 +1,129 @@
+// Problem: Binary Tree Preorder Traversal
+// LeetCode 144
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive DFS
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+// Perform preorder traversal recursively.
+void dfs(TreeNode* root, vector<int>& ans) {
+
+    // Empty tree.
+    if (root == NULL) return;
+
+    // Visit root.
+    ans.push_back(root->val);
+
+    // Visit left subtree.
+    dfs(root->left, ans);
+
+    // Visit right subtree.
+    dfs(root->right, ans);
+}
+
+vector<int> preorderTraversalRecursive(TreeNode* root) {
+
+    vector<int> ans;
+
+    dfs(root, ans);
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<int> preorderTraversalIterative(TreeNode* root) {
+
+    vector<int> ans;
+
+    // Empty tree.
+    if (root == NULL) return ans;
+
+    stack<TreeNode*> st;
+
+    st.push(root);
+
+    while (!st.empty()) {
+
+        TreeNode* node = st.top();
+        st.pop();
+
+        // Visit current node.
+        ans.push_back(node->val);
+
+        // Push right child first.
+        if (node->right) st.push(node->right);
+
+        // Push left child.
+        if (node->left) st.push(node->left);
+    }
+
+    return ans;
+}
+
+// Function to print answer.
+void printAnswer(string approach, vector<int> ans) {
+
+    cout << approach << endl;
+
+    cout << "Preorder Traversal: ";
+
+    for (int x : ans)
+        cout << x << " ";
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+             1
+              \
+               2
+              /
+             3
+    */
+
+    TreeNode* root = new TreeNode(1);
+
+    root->right = new TreeNode(2);
+    root->right->left = new TreeNode(3);
+
+    printAnswer("Approach 1: Recursive DFS",
+                preorderTraversalRecursive(root));
+
+    printAnswer("Approach 2: Iterative DFS",
+                preorderTraversalIterative(root));
+
+    return 0;
+}
