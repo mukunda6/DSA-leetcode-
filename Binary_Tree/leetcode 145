@@ -1,0 +1,132 @@
+// Problem: Binary Tree Postorder Traversal
+// LeetCode 145
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Definition for a Binary Tree Node
+------------------------------------------------------------*/
+
+struct TreeNode {
+
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode(int x) {
+
+        val = x;
+        left = NULL;
+        right = NULL;
+    }
+};
+
+/*------------------------------------------------------------
+Approach 1: Recursive DFS
+Time Complexity: O(n)
+Space Complexity: O(h)
+------------------------------------------------------------*/
+
+// Perform postorder traversal recursively.
+void dfs(TreeNode* root, vector<int>& ans) {
+
+    // Empty tree.
+    if (root == NULL) return;
+
+    // Visit left subtree.
+    dfs(root->left, ans);
+
+    // Visit right subtree.
+    dfs(root->right, ans);
+
+    // Visit root.
+    ans.push_back(root->val);
+}
+
+vector<int> postorderTraversalRecursive(TreeNode* root) {
+
+    vector<int> ans;
+
+    dfs(root, ans);
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 2: Iterative DFS (Stack)
+Time Complexity: O(n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<int> postorderTraversalIterative(TreeNode* root) {
+
+    vector<int> ans;
+
+    // Empty tree.
+    if (root == NULL) return ans;
+
+    stack<TreeNode*> st;
+
+    st.push(root);
+
+    while (!st.empty()) {
+
+        TreeNode* node = st.top();
+        st.pop();
+
+        // Visit current node.
+        ans.push_back(node->val);
+
+        // Push left child first.
+        if (node->left) st.push(node->left);
+
+        // Push right child.
+        if (node->right) st.push(node->right);
+    }
+
+    // Reverse to get Left -> Right -> Root.
+    reverse(ans.begin(), ans.end());
+
+    return ans;
+}
+
+// Function to print answer.
+void printAnswer(string approach, vector<int> ans) {
+
+    cout << approach << endl;
+
+    cout << "Postorder Traversal: ";
+
+    for (int x : ans)
+        cout << x << " ";
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    /*
+             1
+              \
+               2
+              /
+             3
+    */
+
+    TreeNode* root = new TreeNode(1);
+
+    root->right = new TreeNode(2);
+    root->right->left = new TreeNode(3);
+
+    printAnswer("Approach 1: Recursive DFS",
+                postorderTraversalRecursive(root));
+
+    printAnswer("Approach 2: Iterative DFS",
+                postorderTraversalIterative(root));
+
+    return 0;
+}
