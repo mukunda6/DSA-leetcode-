@@ -1,0 +1,123 @@
+// Problem: Next Permutation
+// LeetCode 31
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Brute Force (Generate All Permutations)
+Time Complexity: O(n! × n)
+Space Complexity: O(n!)
+------------------------------------------------------------*/
+
+vector<int> nextPermutationBruteForce(vector<int> nums) {
+
+    vector<vector<int>> perms;
+
+    // Sort to generate permutations in lexicographical order.
+    sort(nums.begin(), nums.end());
+
+    do {
+
+        perms.push_back(nums);
+
+    } while (next_permutation(nums.begin(), nums.end()));
+
+    // Return the second permutation for demonstration.
+    return perms.size() > 1 ? perms[1] : perms[0];
+}
+
+/*------------------------------------------------------------
+Approach 2: STL next_permutation()
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+vector<int> nextPermutationSTL(vector<int> nums) {
+
+    next_permutation(nums.begin(), nums.end());
+
+    return nums;
+}
+
+/*------------------------------------------------------------
+Approach 3: Optimal (In-place)
+Time Complexity: O(n)
+Space Complexity: O(1)
+------------------------------------------------------------*/
+
+void nextPermutationOptimal(vector<int>& nums) {
+
+    int pivot = -1;
+
+    int n = nums.size();
+
+    // Find the pivot element.
+    for (int i = n - 2; i >= 0; i--) {
+
+        if (nums[i] < nums[i + 1]) {
+
+            pivot = i;
+
+            break;
+        }
+    }
+
+    // Already the largest permutation.
+    if (pivot == -1) {
+
+        reverse(nums.begin(), nums.end());
+
+        return;
+    }
+
+    // Find the next greater element.
+    for (int i = n - 1; i > pivot; i--) {
+
+        if (nums[i] > nums[pivot]) {
+
+            swap(nums[i], nums[pivot]);
+
+            break;
+        }
+    }
+
+    // Reverse the suffix.
+    reverse(nums.begin() + pivot + 1, nums.end());
+}
+
+// Function to print answer.
+void printAnswer(string approach, vector<int> nums) {
+
+    cout << approach << endl;
+
+    cout << "Next Permutation: ";
+
+    for (int x : nums)
+        cout << x << " ";
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<int> nums = {1, 2, 3};
+
+    printAnswer("Approach 1: Brute Force",
+                nextPermutationBruteForce(nums));
+
+    printAnswer("Approach 2: STL next_permutation()",
+                nextPermutationSTL(nums));
+
+    vector<int> ans = nums;
+
+    nextPermutationOptimal(ans);
+
+    printAnswer("Approach 3: Optimal",
+                ans);
+
+    return 0;
+}
