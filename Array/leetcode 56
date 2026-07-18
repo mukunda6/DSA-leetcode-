@@ -1,0 +1,107 @@
+// Problem: Merge Intervals
+// LeetCode 56
+// Platform: LeetCode / CodeChef
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/*------------------------------------------------------------
+Approach 1: Brute Force
+Time Complexity: O(n²)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<vector<int>> mergeBruteForce(vector<vector<int>>& intervals) {
+
+    int n = intervals.size();
+
+    // Sort intervals by starting time.
+    sort(intervals.begin(), intervals.end());
+
+    vector<vector<int>> ans;
+
+    for (int i = 0; i < n; i++) {
+
+        int start = intervals[i][0];
+        int end = intervals[i][1];
+
+        // Already merged.
+        if (!ans.empty() && end <= ans.back()[1]) continue;
+
+        // Merge all overlapping intervals.
+        for (int j = i + 1; j < n; j++) {
+
+            if (intervals[j][0] <= end)
+                end = max(end, intervals[j][1]);
+            else
+                break;
+        }
+
+        ans.push_back({start, end});
+    }
+
+    return ans;
+}
+
+/*------------------------------------------------------------
+Approach 2: Optimal (Sorting + Greedy)
+Time Complexity: O(n log n)
+Space Complexity: O(n)
+------------------------------------------------------------*/
+
+vector<vector<int>> mergeOptimal(vector<vector<int>>& intervals) {
+
+    // Sort intervals by starting time.
+    sort(intervals.begin(), intervals.end());
+
+    vector<vector<int>> ans;
+
+    for (auto interval : intervals) {
+
+        // No overlap.
+        if (ans.empty() || interval[0] > ans.back()[1]) {
+
+            ans.push_back(interval);
+        }
+
+        // Overlap found.
+        else {
+
+            ans.back()[1] = max(ans.back()[1], interval[1]);
+        }
+    }
+
+    return ans;
+}
+
+// Function to print answer.
+void printAnswer(string approach, vector<vector<int>> ans) {
+
+    cout << approach << endl;
+
+    for (auto interval : ans) {
+
+        cout << "[ " << interval[0] << ", " << interval[1] << " ] ";
+
+    }
+
+    cout << endl;
+
+    cout << "----------------------------------------" << endl;
+}
+
+int main() {
+
+    vector<vector<int>> intervals = {{1,3},{2,6},{8,10},{15,18}};
+
+    vector<vector<int>> temp1 = intervals;
+    vector<vector<int>> temp2 = intervals;
+
+    printAnswer("Approach 1: Brute Force",
+                mergeBruteForce(temp1));
+
+    printAnswer("Approach 2: Optimal",
+                mergeOptimal(temp2));
+
+    return 0;
+}
